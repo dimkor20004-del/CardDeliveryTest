@@ -37,8 +37,9 @@ public class CardDeliveryTest {
 
         $(".notification__title").shouldBe(Condition.visible, Duration.ofSeconds(20));
         $(".notification__title").shouldHave(Condition.exactText("Успешно!"));
+        String expectedMessage = "Встреча успешно забронирована на " + planningDate;
         $(".notification__content").shouldBe(Condition.visible, Duration.ofSeconds(20));
-        $(".notification__content").shouldHave(Condition.text(planningDate));
+        $(".notification__content").shouldHave(Condition.exactText(expectedMessage));
     }
 
     @Test
