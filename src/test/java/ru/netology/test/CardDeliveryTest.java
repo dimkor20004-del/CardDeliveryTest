@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Selenide.sleep;
 
 public class CardDeliveryTest {
 
@@ -36,14 +35,15 @@ public class CardDeliveryTest {
         $("[data-test-id='agreement']").click();
         $$("button").findBy(Condition.text("Забронировать")).click();
 
-        sleep(3000);
-        $(".notification__title").shouldHave(Condition.text("Успешно!"), Duration.ofSeconds(30));
+        $(".notification__title").shouldBe(Condition.visible, Duration.ofSeconds(20));
+        $(".notification__title").shouldHave(Condition.exactText("Успешно!"));
+        $(".notification__content").shouldBe(Condition.visible, Duration.ofSeconds(20));
+        $(".notification__content").shouldHave(Condition.text(planningDate));
     }
 
     @Test
     public void testInvalidCityShowsError() {
         String planningDate = generateDate(4);
-        System.out.println("Дата: " + planningDate);
 
         $("[data-test-id='city'] input").setValue("Лондон");
         $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.DELETE);
@@ -53,7 +53,8 @@ public class CardDeliveryTest {
         $("[data-test-id='agreement']").click();
         $$("button").findBy(Condition.text("Забронировать")).click();
 
-        $("[data-test-id='city'].input_invalid").shouldBe(Condition.visible);
+        $("[data-test-id='city'].input_invalid .input__sub").shouldBe(Condition.visible, Duration.ofSeconds(20));
+        $("[data-test-id='city'].input_invalid .input__sub").shouldHave(Condition.exactText("Доставка в выбранный город недоступна"));
     }
 
     @Test
@@ -68,7 +69,8 @@ public class CardDeliveryTest {
         $("[data-test-id='agreement']").click();
         $$("button").findBy(Condition.text("Забронировать")).click();
 
-        $("[data-test-id='name'].input_invalid").shouldBe(Condition.visible);
+        $("[data-test-id='name'].input_invalid .input__sub").shouldBe(Condition.visible, Duration.ofSeconds(20));
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(Condition.exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
     }
 
     @Test
@@ -83,7 +85,8 @@ public class CardDeliveryTest {
         $("[data-test-id='agreement']").click();
         $$("button").findBy(Condition.text("Забронировать")).click();
 
-        $("[data-test-id='phone'].input_invalid").shouldBe(Condition.visible);
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldBe(Condition.visible, Duration.ofSeconds(20));
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(Condition.exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
     }
 
     @Test
@@ -97,6 +100,6 @@ public class CardDeliveryTest {
         $("[data-test-id='phone'] input").setValue("+79999999999");
         $$("button").findBy(Condition.text("Забронировать")).click();
 
-        $("[data-test-id='agreement'].input_invalid").shouldBe(Condition.visible);
+        $("[data-test-id='agreement'].input_invalid").shouldBe(Condition.visible, Duration.ofSeconds(20));
     }
 }
